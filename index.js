@@ -8,7 +8,8 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
-
+const cors = require("cors");
+app.use(cors());
 dotenv.config();
 
 app.use(express.json());
