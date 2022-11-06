@@ -13,9 +13,9 @@ router.post("/register", async (req, res) => {
       password: hashedPass,
     });
     const user = await newUser.save();
-    return res.status(200).json(user);
+    return res.status(200).json({ massege: "user created", user });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ massege: "user not created", err });
   }
 });
 
@@ -31,9 +31,9 @@ router.post("/login", async (req, res) => {
       user.password
     );
     !validPassword && res.status(400).json("wrong password");
-    res.status(200).json(user);
+    res.status(200).json({ massege: "user log in", user });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ massege: "some issue with login ", err });
   }
 });
 
