@@ -8,6 +8,8 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
+const questionRoute = require("./routes/question");
+const answerRoute = require("./routes/answer");
 const cors = require("cors");
 app.use(cors());
 dotenv.config();
@@ -18,6 +20,8 @@ app.use(morgan("common"));
 
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/create", questionRoute);
+app.use("/api/create", answerRoute);
 
 app.listen(port, function (err) {
   if (err) {
