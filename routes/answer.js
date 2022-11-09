@@ -7,11 +7,7 @@ router.post("/answer", async (req, res) => {
     const question = await Question.findById(req.body.question);
 
     if (question) {
-      const answer = await Answer.create({
-        content: req.body.content,
-        question: req.body.question,
-        user: req.body.userid,
-      });
+      const answer = await Answer.create(req.body);
       question.answer.push(answer);
       question.save();
     }

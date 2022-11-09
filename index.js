@@ -20,8 +20,8 @@ app.use(morgan("common"));
 
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
-app.use("/api/create", questionRoute);
-app.use("/api/create", answerRoute);
+app.use("/api/post", questionRoute);
+app.use("/api/post", answerRoute);
 
 app.listen(port, function (err) {
   if (err) {
