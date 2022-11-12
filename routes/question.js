@@ -20,6 +20,7 @@ router.get("/all", async (req, res) => {
       path: "answer",
       populate: {
         path: "user",
+        path: "comment",
       },
     })
     .exec(function (err, quesions) {
