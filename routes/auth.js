@@ -31,9 +31,9 @@ router.post("/login", async (req, res) => {
       user.password
     );
     !validPassword && res.status(400).json("wrong password");
-    res.status(200).json({ massege: "user log in", user });
+    return res.status(200).json({ massege: "user log in", user });
   } catch (err) {
-    res.status(500).json({ massege: "some issue with login ", err });
+    return res.status(500).json({ massege: "some issue with login ", err });
   }
 });
 
