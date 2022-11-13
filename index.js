@@ -10,6 +10,7 @@ const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const questionRoute = require("./routes/question");
 const answerRoute = require("./routes/answer");
+const commentRoute = require("./routes/comment");
 const cors = require("cors");
 app.use(cors());
 dotenv.config();
@@ -22,6 +23,7 @@ app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/post", questionRoute);
 app.use("/api/post", answerRoute);
+app.use("/api/post", commentRoute);
 
 app.listen(port, function (err) {
   if (err) {
