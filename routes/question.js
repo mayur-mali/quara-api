@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Question = require("../models/Question");
+const Answer = require("../models/Answer");
 
 // post question
 router.post("/question", async (req, res) => {
@@ -18,10 +19,15 @@ router.get("/all", async (req, res) => {
     .populate("user")
     .populate({
       path: "answer",
-      populate: {
-        path: "user",
-        path: "comment",
-      },
+      populate: [
+        { path: "user" },
+        {
+          path: "comment",
+          populate: {
+            path: "user",
+          },
+        },
+      ],
     })
     .exec(function (err, quesions) {
       if (err) {
@@ -29,6 +35,27 @@ router.get("/all", async (req, res) => {
       }
       return res.status(200).json(quesions);
     });
+});
+
+// delete post
+
+router.delete("/:id", (req, res) => {
+  const question = Question.findById(req.params.id);
+  if (question.user === req.body.user) {
+    console.log(question);
+    res.redirect("back");
+  }
+  // if (question.user.id === req.body.userid) {
+  //   question.remove();
+  //   Answer.deleteMany({ question: req.body.userid }, (err) => {
+  //     return res.status(400).json(err);
+  //   });
+  //   return res.status(200).json("post deleted");
+  // } else {
+  //   return res
+  //     .status(400)
+  //     .json("you don't have permission to delete this post");
+  // }
 });
 
 module.exports = router;
