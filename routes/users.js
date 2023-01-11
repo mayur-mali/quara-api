@@ -1,6 +1,23 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
+
+// GOOGLE LOGIN
+
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["email", "profile"] })
+);
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "http://localhost:3000/",
+    failureRedirect: "http://localhost:3000/login",
+  })
+);
+
 // UPDATE USER
 router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.user.isAdmin) {

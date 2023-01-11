@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 const db = require("./config/mongoose");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -11,8 +11,25 @@ const authRoute = require("./routes/auth");
 const questionRoute = require("./routes/question");
 const answerRoute = require("./routes/answer");
 const commentRoute = require("./routes/comment");
+const passport = require("passport");
+const session = require("express-session");
+const passportGoogle = require("./config/googleOauth");
 const cors = require("cors");
-app.use(cors());
+app.use(
+  session({
+    secret: "Our little secret.",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 dotenv.config();
 
 app.use(express.json());

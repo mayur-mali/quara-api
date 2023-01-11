@@ -1,6 +1,22 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
+const home = "http://localhost:3000/";
+// GOOGLE LOGIN
+
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["email", "profile"] })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    successRedirect: home,
+    failureRedirect: "http://localhost:3000/login",
+  })
+);
 
 //REGISTER USER
 router.post("/register", async (req, res) => {
