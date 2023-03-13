@@ -10,13 +10,37 @@ router.get(
   passport.authenticate("google", { scope: ["email", "profile"] })
 );
 
+router.get("/login/success", (req, res) => {
+  if (req.user) {
+    res.status(200).json({
+      error: false,
+      message: "Successfully Loged In",
+      user: req.user,
+    });
+  } else {
+    res.status(403).json({ error: true, message: "Not Authorized" });
+  }
+});
+
 router.get(
   "/google/callback",
   passport.authenticate("google", {
     successRedirect: home,
-    failureRedirect: "http://localhost:3000/login",
+    failureRedirect: "/login/failed",
   })
 );
+
+router.get("/login/failed", (req, res) => {
+  res.status(401).json({
+    error: true,
+    message: "Log in failure",
+  });
+});
+
+router.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect(home);
+});
 
 //REGISTER USER
 router.post("/register", async (req, res) => {
@@ -27,6 +51,7 @@ router.post("/register", async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: hashedPass,
+      profilePicture: req.body.profilePicture,
     });
     const user = await newUser.save();
     return res.status(200).json({ massege: "user created", user });

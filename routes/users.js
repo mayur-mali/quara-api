@@ -3,21 +3,6 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 
-// GOOGLE LOGIN
-
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["email", "profile"] })
-);
-
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "http://localhost:3000/",
-    failureRedirect: "http://localhost:3000/login",
-  })
-);
-
 // UPDATE USER
 router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.user.isAdmin) {
@@ -69,43 +54,20 @@ router.get("/:id", async (req, res) => {
 // FOLLOWERS
 
 router.put("/:id/follow", async (req, res) => {
-  if (req.body.userId !== req.params.id) {
-    try {
-      const user = await User.findById(req.params.id);
-      const currentUser = await User.findById(req.body.userId);
-      if (!user.followers.includes(req.body.userId)) {
-        await user.updateOne({ $push: { followers: req.body.userId } });
-        await currentUser.updateOne({ $push: { followings: req.params.id } });
-        return res.status(200).json("user has been followed");
-      } else {
-        return res.status(403).json("you already follow this user");
-      }
-    } catch (err) {
-      return res.status(500).json(err);
+  try {
+    const user = await User.findById(req.params.id);
+    const currentUser = await User.findById(req.body.userId);
+    if (!user.followers.includes(req.body.userId)) {
+      await user.updateOne({ $push: { followers: req.body.userId } });
+      await currentUser.updateOne({ $push: { followings: req.params.id } });
+      return res.status(200).json({ massage: "user has been followed" });
+    } else {
+      await user.updateOne({ $pull: { followers: req.body.userId } });
+      await currentUser.updateOne({ $pull: { followings: req.params.id } });
+      return res.status(200).json({ massage: "user has been unfollowed" });
     }
-  } else {
-    return res.status(500).json("you cannot follow yourself");
-  }
-});
-
-// UNFOLLOW
-router.put("/:id/unfollow", async (req, res) => {
-  if (req.body.userId !== req.params.id) {
-    try {
-      const user = await User.findById(req.params.id);
-      const currentUser = await User.findById(req.body.userId);
-      if (user.followers.includes(req.body.userId)) {
-        await user.updateOne({ $pull: { followers: req.body.userId } });
-        await currentUser.updateOne({ $pull: { followings: req.params.id } });
-        return res.status(200).json("user has been unfollowed");
-      } else {
-        return res.status(403).json("you already unfollow this user");
-      }
-    } catch (err) {
-      return res.status(500).json(err);
-    }
-  } else {
-    return res.status(500).json("you cannot unfollow yourself");
+  } catch (error) {
+    console.log(error.massage);
   }
 });
 
